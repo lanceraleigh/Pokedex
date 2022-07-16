@@ -1,14 +1,10 @@
 <template>
-  <pokeSearch />
+  <router-view />
 </template>
 
 <script>
-import pokeSearch from "./components/PokeSearch.vue";
 export default {
   name: "App",
-  components: {
-    pokeSearch,
-  },
 };
 </script>
 <style>

@@ -1,4 +1,5 @@
 <template>
+  <router-link to="/statcomparison">Compare Base Stats</router-link>
   <h1>Pokédex</h1>
   <form @submit.prevent="setPokemonName">
     <input
@@ -126,8 +127,6 @@ export default {
   name: "pokeSearch",
   data() {
     return {
-      imgUndefined:
-        "https://www.seekpng.com/png/detail/154-1548115_mario-question-block-png-mario-block.png",
       imgPulls: {
         front_default: [],
         back_default: [],
