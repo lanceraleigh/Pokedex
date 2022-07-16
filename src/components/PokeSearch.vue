@@ -1,6 +1,6 @@
 <template>
   <h1>Pokédex</h1>
-  <form @submit.prevent="pullPokeInfo">
+  <form @submit.prevent="setPokemonName">
     <input
       @keydown="imgDisplayIsFalse"
       @click="imgDisplayIsFalse"
@@ -52,7 +52,14 @@
         </div>
       </div>
     </div>
-    <button @click="">{{ evolutionChainPull }}</button>
+    <button
+      @click="
+        imgDisplayIsFalse();
+        pullPokeInfo(this.evolutionChainPull);
+      "
+    >
+      {{ evolutionChainPull }}
+    </button>
     <h2>In Game Descriptions: {{ currentLanguage }}</h2>
     <label for="languages">Pick Language:</label>
     <select name="languages" id="languages" v-model="currentLanguage">
@@ -162,6 +169,9 @@ export default {
     imgDisplayIsFalse() {
       this.searchTrue = false;
     },
+    setPokemonName(submitEvent) {
+      this.pullPokeInfo(submitEvent.target.elements.pokeSearchText.value);
+    },
     async pokemonUrlData() {
       let pokemonUrl = await axios.get(this.currentPokemonUrl);
       console.log(pokemonUrl);
@@ -191,11 +201,11 @@ export default {
           );
         }
     },
-    async pullPokeInfo(submitEvent) {
+    async pullPokeInfo(pokemon) {
       let baseUrl =
         "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
       let pulledInfo = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${submitEvent.target.elements.pokeSearchText.value}`
+        `https://pokeapi.co/api/v2/pokemon/${pokemon}`
       );
       console.log(pulledInfo);
       this.currentPokemonName = this.capitalizeFirstLetter(
