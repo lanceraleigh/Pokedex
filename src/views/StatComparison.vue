@@ -14,7 +14,6 @@
       id="pokeSearchTextOne"
       name="pokeSearchTextOne"
       v-model="pokemonOneName"
-      ref="pokemonOneName"
       placeholder="Pokémon One.."
     />
     <input
@@ -24,7 +23,6 @@
       id="pokeSearchTextTwo"
       name="pokeSearchTextTwo"
       v-model="pokemonTwoName"
-      ref="pokemonOneName"
       placeholder="Pokémon Two.."
     />
     <input type="submit" value="Compare Pokemon Stats" />
@@ -54,10 +52,12 @@ export default {
       searchTrue: false,
       pokemonOneName: "",
       pokemonTwoName: "",
-      pokemonOneUrl: [],
-      pokemonTwoUrl: [],
-      pokemonOneUrlDataReturn: [],
-      pokemonTwoUrlDataReturn: [],
+      pokemonOneSecondPullUrl: "",
+      pokemonTwoSecondPullUrl: "",
+      pokemonOneSecondPull: [],
+      pokemonTwoSecondPull: [],
+      pokemonOneStats: [],
+      pokemonTwoStats: [],
       evolutionChain: [],
       evolutionChainPull: [],
     };
@@ -75,12 +75,11 @@ export default {
     setPokemonName() {
       this.pullPokeInfo(this.pokemonOneName);
       this.pullPokeInfo(this.pokemonTwoName);
-      console.log(this.pokemonOneName);
-      console.log(this.pokemonTwoName);
     },
     async pokemonUrlData() {
-      let pokemonOneImg = await axios.get(this.currentPokemonUrl);
-      let pokemonTwoImg = await axios.get(this.currentPokemonUrl);
+      this.pokemonOneSecondPull = await axios.get(this.pokemonOneSecondPullUrl);
+      this.pokemonTwoSecondPull = await axios.get(this.pokemonTwoSecondPullUrl);
+      console.log([this.pokemonOneSecondPull, this.pokemonTwoSecondPull]);
     },
     async pullPokeInfo(submitEvent) {
       let baseUrl =
@@ -91,13 +90,16 @@ export default {
       let pulledInfoTwo = await axios.get(
         `https://pokeapi.co/api/v2/pokemon/${this.pokemonTwoName}`
       );
-      console.log(pulledInfoOne);
-      console.log(pulledInfoOne);
+      this.pokemonOneSecondPullUrl = pulledInfoOne.data.species.url;
+      this.pokemonTwoSecondPullUrl = pulledInfoTwo.data.species.url;
+      this.pokemonOneStats = pulledInfoOne.data.stats;
+      this.pokemonTwoStats = pulledInfoTwo.data.stats;
+      console.log([pulledInfoOne, pulledInfoTwo]);
       this.pokemonOneImg = `${baseUrl}${pulledInfoOne.data.id}.png`;
       this.pokemonTwoImg = `${baseUrl}${pulledInfoTwo.data.id}.png`;
 
       // seconday data actions
-      // this.pokemonUrlData();
+      this.pokemonUrlData();
       // this.imgDisplay();
     },
   },
