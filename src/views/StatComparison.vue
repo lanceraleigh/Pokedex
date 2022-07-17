@@ -1,23 +1,30 @@
 <template>
   <router-link to="/">PokeDex</router-link>
   <h1>Stat Comparison</h1>
-  <form @submit.prevent="setPokemonName">
+  <form
+    @submit.prevent="
+      imgDisplay();
+      setPokemonName();
+    "
+  >
     <input
       @keydown="imgDisplayIsFalse"
       @click="imgDisplayIsFalse"
       type="text"
-      id="pokeSearchText"
-      name="pokeSearchText"
+      id="pokeSearchTextOne"
+      name="pokeSearchTextOne"
       v-model="pokemonOneName"
+      ref="pokemonOneName"
       placeholder="Pokémon One.."
     />
     <input
       @keydown="imgDisplayIsFalse"
       @click="imgDisplayIsFalse"
       type="text"
-      id="pokeSearchText"
-      name="pokeSearchText"
+      id="pokeSearchTextTwo"
+      name="pokeSearchTextTwo"
       v-model="pokemonTwoName"
+      ref="pokemonOneName"
       placeholder="Pokémon Two.."
     />
     <input type="submit" value="Compare Pokemon Stats" />
@@ -25,13 +32,13 @@
 
   <div v-if="this.searchTrue" class="pulledData">
     <div class="comparisons">
-      <div class="pokemonOne views">
+      <div class="pokemonOne">
         <h1>{{ capitalizeFirstLetter(pokemonOneName) }}</h1>
-        <img v-bind:src="this.pokemonOneImg" />
+        <img v-bind:src="pokemonOneImg" />
       </div>
-      <div class="pokemonOne views">
+      <div class="pokemonOne">
         <h1>{{ capitalizeFirstLetter(pokemonTwoName) }}</h1>
-        <img v-bind:src="this.pokemonTwoImg" />
+        <img v-bind:src="pokemonTwoImg" />
       </div>
     </div>
   </div>
@@ -42,9 +49,9 @@ export default {
   name: "pokeSearch",
   data() {
     return {
-      pokemonOneImg: [],
-      pokemonTwoImg: [],
-      searchTrue: true,
+      pokemonOneImg: "",
+      pokemonTwoImg: "",
+      searchTrue: false,
       pokemonOneName: "",
       pokemonTwoName: "",
       pokemonOneUrl: [],
@@ -74,31 +81,24 @@ export default {
     async pokemonUrlData() {
       let pokemonOneImg = await axios.get(this.currentPokemonUrl);
       let pokemonTwoImg = await axios.get(this.currentPokemonUrl);
-      console.log(pokemonOneImg);
-      console.log(pokemonTwoImg);
     },
-    async pullPokeInfo(pokemonOne, pokemonTwo) {
+    async pullPokeInfo(submitEvent) {
       let baseUrl =
         "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/";
       let pulledInfoOne = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${pokemonOne}`
+        `https://pokeapi.co/api/v2/pokemon/${this.pokemonOneName}`
       );
       let pulledInfoTwo = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${pokemonTwo}`
+        `https://pokeapi.co/api/v2/pokemon/${this.pokemonTwoName}`
       );
       console.log(pulledInfoOne);
       console.log(pulledInfoOne);
-      this.currentPokemonName = this.capitalizeFirstLetter(
-        pulledInfo.data.name
-      );
-      this.currentPokemonUrl = pulledInfo.data.species.url;
-      // Specifying images
-      this.imgPulls.front_default = `${baseUrl}${pulledInfoOne.data.id}.png`;
-      this.imgPulls.front_default = `${baseUrl}${pulledInfoTwo.data.id}.png`;
+      this.pokemonOneImg = `${baseUrl}${pulledInfoOne.data.id}.png`;
+      this.pokemonTwoImg = `${baseUrl}${pulledInfoTwo.data.id}.png`;
 
       // seconday data actions
-      this.pokemonUrlData();
-      this.imgDisplay();
+      // this.pokemonUrlData();
+      // this.imgDisplay();
     },
   },
   // mounted() {
